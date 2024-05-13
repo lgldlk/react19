@@ -1,12 +1,12 @@
-import { Suspense, use } from "react";
+import { Suspense, use, useRef } from "react";
 
 const fetchJokes = async () => {
     const res = await fetch("https://api.chucknorris.io/jokes/random");
     return res.json(); // returns a promise
 };
 
-const JokeItem = () => {
-    const joke = use(fetchJokes());
+const JokeItem = ({ jokePromise }) => {
+    const joke = use(jokePromise);
 
     return (
         <h2 className="text-xl font-medium italic text-neutral-900">
@@ -15,6 +15,7 @@ const JokeItem = () => {
     );
 };
 export default function Joke() {
+    const jokePromise = useRef(fetchJokes());
     return (
         <div className="shadow p-4 my-6 rounded bg-emerald-50">
             <Suspense
@@ -24,7 +25,7 @@ export default function Joke() {
                     </h2>
                 }
             >
-                <JokeItem />
+                <JokeItem jokePromise={jokePromise.current} />
             </Suspense>
         </div>
     );
